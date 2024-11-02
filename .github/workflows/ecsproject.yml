@@ -25,7 +25,10 @@ jobs:
 
     - name: Terraform Init
       run: |
-        ls -la
+        cd terraform 
+        cd modules
+        cd clusters
+        terraform init
 
     - name: Terraform Format
       working-directory: ./terraform/modules/clusters
