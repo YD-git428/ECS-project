@@ -24,8 +24,8 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Terraform Init
-      working-directory: ./terraform/modules/clusters
-      run: 
+      working-directory: ./terraform/modules/cluster
+      run: terraform init 
 
     - name: Terraform Format
       working-directory: ./terraform/modules/clusters
