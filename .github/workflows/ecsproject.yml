@@ -25,7 +25,9 @@ jobs:
 
     - name: Terraform Init
       working-directory: ./terraform/modules/cluster
-      run: terraform init 
+      run: |
+        ls -la
+        terraform init
 
     - name: Terraform Format
       working-directory: ./terraform/modules/clusters
