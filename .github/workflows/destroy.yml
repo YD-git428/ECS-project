@@ -13,5 +13,4 @@ jobs:
      - name: Terraform destroy
        id: destroy
        run: |
-        cd terraform
-        terraform destroy -auto-approved
+        ls --recursive
