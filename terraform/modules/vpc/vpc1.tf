@@ -3,11 +3,11 @@ resource "aws_vpc" "ecs_vpc" {
   instance_tenancy = "default"
 
   tags = {
-    Name = "ecs-project-vpc"
+    Name = var.vpc_tag
   }
 
   lifecycle {
-    prevent_destroy = false  
+    prevent_destroy = false
   }
 
 }
@@ -15,7 +15,7 @@ resource "aws_internet_gateway" "ecs-igw" {
   vpc_id = aws_vpc.ecs_vpc.id
 
   tags = {
-    Name = "ecs-igw"
+    Name = var.igw_tag
   }
 }
 
@@ -26,32 +26,32 @@ resource "aws_route_table" "ecs_route_table_pub" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.ecs-igw.id
   }
-  
+
   tags = {
-    Name = "ecs-rtable-project"
+    Name = var.route_table_tag
   }
 }
 
 
 resource "aws_subnet" "ecs_public_subnet1" {
-  vpc_id     = aws_vpc.ecs_vpc.id
-  cidr_block = "10.0.0.0/24"
-  availability_zone = "eu-west-2a"
-  
+  vpc_id            = aws_vpc.ecs_vpc.id
+  cidr_block        = "10.0.0.0/24"
+  availability_zone = var.availability_zone1
+
 
   tags = {
-    Name = "ecs-project-sub"
+    Name = var.subnet1_tag
   }
 }
 resource "aws_subnet" "ecs_public_subnet2" {
-  vpc_id     = aws_vpc.ecs_vpc.id
-  cidr_block = "10.0.1.0/24"
-  availability_zone = "eu-west-2b"
-  
-  
+  vpc_id            = aws_vpc.ecs_vpc.id
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = var.availability_zone2
+
+
 
   tags = {
-    Name = "ecs-project-sub2"
+    Name = var.subnet2_tag
   }
 }
 
@@ -65,46 +65,46 @@ resource "aws_route_table_association" "subnet-2" {
   route_table_id = aws_route_table.ecs_route_table_pub.id
 }
 resource "aws_security_group" "ecs_sg_project" {
-  name        = "allow_HTTP"
+  name        = "allow_HTTP&HTTPS"
   description = "Allow HTTPS and HTTP inbound traffic and all outbound traffic"
   vpc_id      = aws_vpc.ecs_vpc.id
 
   ingress {
-    description      = "Allow HTTPS traffic"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]  
+    description = "Allow HTTPS traffic"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    description      = "Allow HTTP traffic"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]  
+    description = "Allow HTTP traffic"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    description      = "Container port"
-    from_port        = 3000
-    to_port          = 3000
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]  
+    description = "Container port"
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
 
 
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"  
-    cidr_blocks      = ["0.0.0.0/0"]  
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
 
-tags = {
-    Name = "ecs-sg"
+  tags = {
+    Name = var.security_group_tag
   }
 }
 

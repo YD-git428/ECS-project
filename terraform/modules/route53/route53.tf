@@ -1,70 +1,66 @@
 data "aws_route53_zone" "selected" {
-  name         = "youcefderder.co.uk"
+  name         = var.domain_name
   private_zone = false
 }
 
 resource "aws_route53_record" "www_project" {
-  zone_id = data.aws_route53_zone.selected.zone_id
-  name    = "www.${data.aws_route53_zone.selected.name}"
-  type    = "A"
-  alias {
-    name                   = aws_lb.ecs-app-lb.dns_name
-    zone_id                = aws_lb.ecs-app-lb.zone_id
-    evaluate_target_health = true
-  }
+  zone_id = data.aws_route53_zone.selected.id
+  name    = "tm"
+  type    = "CNAME"
+  ttl     = 200
+
+  records = [var.lb_dns]
 }
 
-resource "aws_acm_certificate" "cert" {
-  domain_name       = data.aws_route53_zone.selected.name
-  validation_method = "DNS"
-  
 
-  tags = {
-    Name = "my_dns_cert"
-  }
-}
+
+
 resource "aws_cloudwatch_metric_alarm" "ecs_metric_alarm" {
   alarm_name          = "alarm_project"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "2"
+  evaluation_periods  = 2
   metric_name         = aws_cloudwatch_log_metric_filter.error_metric_filter.metric_transformation[0].name
   namespace           = aws_cloudwatch_log_metric_filter.error_metric_filter.metric_transformation[0].namespace
-  period              = "120"
+  period              = 120
   statistic           = "Average"
-  threshold           = "90"
+  threshold           = 90
   alarm_description   = "This metric monitors fargate cpu utilization"
-  alarm_actions = [aws_sns_topic.sns_project.arn]
+  alarm_actions       = [aws_sns_topic.sns_project.arn]
 
   dimensions = {
-      ClusterName = aws_ecs_cluster.ecs_cluster_project.name
-      ECSServicName = aws_ecs_service.mongo.name
+    ClusterName = var.cluster_id
+    ServiceName = var.ecs_service_id
+  }
+
+  tags = {
+    name = var.cloudwatch_tag
   }
 }
 
 
 
 resource "aws_sns_topic" "sns_project" {
-  name = "user-sns-topic"
+  name = var.sns_topic_name
 }
 
 resource "aws_sns_topic_subscription" "user_updates_sqs_target" {
   topic_arn = aws_sns_topic.sns_project.arn
   protocol  = "email"
-  endpoint  = "youde067@gmail.com"
+  endpoint  = var.email
 }
 
 resource "aws_route53_health_check" "health_check" {
-  fqdn              = "youcefderder.co.uk"
-  port              = 443
-  type              = "HTTPS"
-  resource_path     = "/"
-  failure_threshold = "5"
-  request_interval  = "30"
+  fqdn                            = var.lb_dns
+  port                            = 3000
+  type                            = "HTTP"
+  resource_path                   = "/"
+  failure_threshold               = 5
+  request_interval                = 30
   insufficient_data_health_status = "Healthy"
 
 
   tags = {
-    Name = "healthcheck_route53"
+    Name = var.healthcheck_tag
   }
 }
 resource "aws_cloudwatch_log_group" "my_first_log_grp" {
@@ -75,11 +71,11 @@ resource "aws_cloudwatch_log_group" "my_first_log_grp" {
 resource "aws_cloudwatch_log_metric_filter" "error_metric_filter" {
   name           = "ErrorCountFilter"
   log_group_name = aws_cloudwatch_log_group.my_first_log_grp.name
-  pattern        = "ERROR"  
+  pattern        = "ERROR"
 
   metric_transformation {
     name      = "ErrorCount"
     namespace = "MyAppMetrics"
-    value     = "1"
+    value     = 1
   }
 }
