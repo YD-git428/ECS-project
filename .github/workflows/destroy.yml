@@ -10,7 +10,6 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: "eu-west-2"
    steps:
-     - name: Terraform destroy
-       id: destroy
+     - name: Terraform destroy debug
        run: |
-        ls --recursive
+        cd ~/ECS\ Project/ECS-project-end2end/terraform
