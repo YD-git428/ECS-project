@@ -9,6 +9,6 @@ jobs:
    steps:
      - name: Terraform destroy 
        run: |
-          cd ./ECS-project-end2end/terraform
+          cd ./terraform
           terraform destroy -auto-approve
         

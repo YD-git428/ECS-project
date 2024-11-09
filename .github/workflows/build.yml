@@ -39,7 +39,7 @@ jobs:
     - name: Terraform Plan
       run: |
         cd terraform 
-        terraform plan -input=false
+        terraform plan -refresh=true -input=false
       continue-on-error: false
 
     - name: Terraform Apply
