@@ -17,6 +17,7 @@ module "ecs_module" {
   taskrole_policy_attachment_name = "role_policy"
   taskexec_name                   = "task_execution_role"
   task_definition_family          = "task_family_v1"
+  execution_policy_name           = "execution_policy_project"
 
 
 }
@@ -25,9 +26,9 @@ module "alb_module" {
   source             = "./modules/alb"
   ssl_policy         = "ELBSecurityPolicy-TLS13-1-2-2021-06"
   lb_tag             = "alb_project"
-  lb_name            = "alb-project-name"
+  lb_name            = "alb-name"
   http_listener_tag  = "http_tag"
-  targetgrp_name     = "target-group-project"
+  targetname         = "targetname"
   targetgrp_tag      = "tg_project"
   https_listener_tag = "https_tag"
   subnet_ids         = [module.vpc.subnet1_id, module.vpc.subnet2_id]

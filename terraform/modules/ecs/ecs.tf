@@ -94,7 +94,7 @@ resource "aws_iam_policy_attachment" "ecs-attach" {
 }
 
 resource "aws_iam_policy" "execution_policy" {
-  name        = "project_policy"
+  name        = var.execution_policy_name
   description = "My first policy"
 
   # Terraform's "jsonencode" function converts a

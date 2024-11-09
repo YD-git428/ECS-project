@@ -14,7 +14,7 @@ variable "lb_tag" {
   type = string
 }
 
-variable "targetgrp_name" {
+variable "targetname" {
   type = string
 }
 

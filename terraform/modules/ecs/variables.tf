@@ -53,3 +53,7 @@ variable "taskexec_name" {
 variable "task_definition_family" {
   type = string
 }
+
+variable "execution_policy_name" {
+  type = string
+}

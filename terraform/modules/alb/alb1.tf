@@ -13,7 +13,7 @@ resource "aws_lb" "ecs-app-lb" {
 
 
 resource "aws_lb_target_group" "targetgrp-project" {
-  name        = var.targetgrp_name
+  name        = var.targetname
   target_type = "ip"
   port        = 3000
   vpc_id      = var.vpc_id
