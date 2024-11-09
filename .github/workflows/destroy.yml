@@ -1,5 +1,6 @@
 name: Terraform Destroy
-on: [push]
+on:
+  workflow_dispatch: 
 
 jobs:
  tf-destroy:
@@ -8,5 +9,6 @@ jobs:
    steps:
      - name: Terraform destroy 
        run: |
-          pwd
+          cd ./ECS-project-end2end/terraform
+          terraform destroy -auto-approve
         
