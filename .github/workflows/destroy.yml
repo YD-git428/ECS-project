@@ -1,0 +1,13 @@
+name: Terraform Destroy
+on:
+  workflow_dispatch: 
+
+jobs:
+ tf-destroy:
+   runs-on: ubuntu-latest
+
+   steps:
+     - name: Terraform destroy 
+       run: |
+          cd ./terraform
+          terraform destroy -auto-approve
