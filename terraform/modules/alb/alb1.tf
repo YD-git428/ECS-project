@@ -4,6 +4,7 @@ resource "aws_lb" "ecs-app-lb" {
   load_balancer_type = "application"
   security_groups    = [var.sec_grp_arn]
   subnets            = var.subnet_ids
+  drop_invalid_header_fields = true
 
   tags = {
     Name = var.lb_tag

@@ -96,6 +96,7 @@ resource "aws_security_group" "ecs_sg_project" {
 
 
   egress {
+    description = "Allow outbound traffic to all ports"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"

@@ -49,6 +49,9 @@ resource "aws_sns_topic_subscription" "user_updates_sqs_target" {
   endpoint  = var.email
 }
 
+  
+
+
 resource "aws_route53_health_check" "health_check" {
   fqdn                            = var.lb_dns
   port                            = 3000

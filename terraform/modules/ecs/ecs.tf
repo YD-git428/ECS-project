@@ -3,6 +3,10 @@
 resource "aws_ecs_cluster" "ecs_cluster_project" {
   name = var.cluster_name
 
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
   tags = {
     name = var.cluster_tag
   }
@@ -107,7 +111,7 @@ resource "aws_iam_policy" "execution_policy" {
         Action = [
           "ecr:GetAuthorizationToken"
         ]
-        Resource = "*"
+        Resource = "arn:aws:ecr:eu-west-2:418295709007:repository/yderder_latest"
       },
       {
         Effect = "Allow"
