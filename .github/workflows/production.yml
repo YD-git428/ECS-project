@@ -2,9 +2,10 @@ name: My First automated deployment Pipeline
 
 
 on:
-  push:
-    branches: 
-    - main
+    workflow_run:
+      workflows: ["Build and push docker image to ECR"]  
+      types:
+        - completed
 
 jobs:
   build:
@@ -16,12 +17,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
+    - name: Configure-AWS-credentials
+      id: aws-access
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: "eu-west-2"
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Setup Terraform                                                                      
       uses: hashicorp/setup-terraform@v1
@@ -34,7 +36,7 @@ jobs:
     - name: Terraform Format
       run: |
         cd terraform 
-        terraform fmt -check
+        terraform fmt --recursive -check
 
     - name: Terraform Plan
       run: |

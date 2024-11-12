@@ -1,0 +1,42 @@
+name: Build and push docker image to ECR
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+   build:
+      runs-on: ubuntu-latest
+     
+      steps: 
+      - name: checkout code
+        uses: actions/checkoutcode@v3
+
+      - name: Configure AWS credentials
+        run: ${{ steps.aws-access.outputs.Configure-AWS-credentials }}
+
+      - name:  Login to AWS CLI      
+        run: |
+          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 418295709007.dkr.ecr.eu-west-2.amazonaws.com
+        continue-on-error: false
+
+      - name: Log in to AWS ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.ECR_REPOSITORY }}:latest .
+
+      - name: Tag Docker image
+        run: |
+          docker tag ${{ secrets.ECR_REPOSITORY }}:latest ${{ secrets.ECR_REPOSITORY }}:latest
+
+      - name: Push Docker image to AWS ECR
+        run: |
+          docker push ${{ secrets.ECR_REPOSITORY }}:latest
+
+
+
+

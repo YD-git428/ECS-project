@@ -7,7 +7,24 @@ jobs:
    runs-on: ubuntu-latest
 
    steps:
-     - name: Terraform destroy 
+     - name: Check out repository
+       uses: actions/checkout@v3
+
+     - name: AWS Config Details
+       run: ${{ steps.aws-access.outputs.Configure-AWS-credentials }}
+
+     - name: Terraform Init
+       working-directory: ./terraform
+       run: | 
+           terraform init
+ 
+     - name: Terraform Plan
+       working-directory: ./terraform
        run: |
-          cd ./terraform
-          terraform destroy -auto-approve
+         terraform plan -refresh=true -input=false
+       continue-on-error: false
+
+     - name: Terraform destroy 
+       working-directory: ./terraform
+       run: |
+         terraform destroy -auto-approve 
