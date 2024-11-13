@@ -11,7 +11,7 @@ jobs:
      
       steps: 
       - name: checkout code
-        uses: actions/checkoutcode@v3
+        uses: actions/checkout@v3
 
       - name: Configure AWS credentials
         run: ${{ steps.aws-access.outputs.Configure-AWS-credentials }}
