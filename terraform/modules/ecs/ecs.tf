@@ -37,7 +37,7 @@ resource "aws_ecs_service" "ecsservice_project" {
 
   load_balancer {
     target_group_arn = var.target_grp_arn
-    container_name   = "yderder_latest"
+    container_name   = "project_image_yd"
     container_port   = 3000
   }
 
@@ -111,7 +111,7 @@ resource "aws_iam_policy" "execution_policy" {
         Action = [
           "ecr:GetAuthorizationToken"
         ]
-        Resource = "arn:aws:ecr:eu-west-2:418295709007:repository/yderder_latest"
+        Resource = "arn:aws:ecr:eu-west-2:418295709007:repository/project_image_yd"
       },
       {
         Effect = "Allow"
@@ -121,7 +121,7 @@ resource "aws_iam_policy" "execution_policy" {
           "ecr:BatchCheckLayerAvailability"
         ]
 
-        Resource = "arn:aws:ecr:eu-west-2:418295709007:repository/yderder_latest"
+        Resource = "arn:aws:ecr:eu-west-2:418295709007:repository/project_image_yd"
       },
       {
         Effect = "Allow"
@@ -171,8 +171,8 @@ resource "aws_ecs_task_definition" "aws_task_definition" {
   container_definitions = <<TASK_DEFINITION
 [
   {
-    "name": "yderder_latest",
-    "image": "418295709007.dkr.ecr.eu-west-2.amazonaws.com/yderder_latest:latest",
+    "name": "project_image_yd",
+    "image": "418295709007.dkr.ecr.eu-west-2.amazonaws.com/project_image_yd:ECS_project",
 
     "cpu": 1024,
     "memory": 3072,
