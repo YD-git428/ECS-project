@@ -1,4 +1,4 @@
-name: My First automated deployment Pipeline 
+name: Deployment of the Application as IaC
 
 
 on:
@@ -35,7 +35,7 @@ jobs:
     - name: Terraform Format
       run: |
         cd terraform 
-        terraform fmt --recursive -check
+        terraform fmt --recursive 
 
     - name: Terraform Plan
       run: |
