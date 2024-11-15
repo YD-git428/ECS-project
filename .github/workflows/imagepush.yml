@@ -28,15 +28,15 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t yderder_latest:ECS_image .
+          docker build -t project_image_yd:ECS_image .
 
       - name: Tag Docker image
         run: |
-          docker tag yderder_latest:ECS_image ${{ secrets.AWS_ID }}/yderder_latest:ECS_image
+          docker tag project_image_yd:ECS_image ${{ secrets.AWS_ID }}/project_image_yd:ECS_image
 
       - name: Push Docker image to AWS ECR
         run: |
-          docker push ${{ secrets.AWS_ID }}/yderder_latest:ECS_image
+          docker push ${{ secrets.AWS_ID }}/project_image_yd:ECS_image
 
 
 
