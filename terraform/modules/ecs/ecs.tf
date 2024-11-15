@@ -111,7 +111,7 @@ resource "aws_iam_policy" "execution_policy" {
         Action = [
           "ecr:GetAuthorizationToken"
         ]
-        Resource = "arn:aws:ecr:eu-west-2:418295709007:repository/project_image_yd:ECS_project"
+        Resource = "*"
       },
       {
         Effect = "Allow"
