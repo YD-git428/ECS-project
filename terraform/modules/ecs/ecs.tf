@@ -172,7 +172,7 @@ resource "aws_ecs_task_definition" "aws_task_definition" {
 [
   {
     "name": "project_image_yd",
-    "image": "418295709007.dkr.ecr.eu-west-2.amazonaws.com/project_image_yd:ECS_project",
+    "image": "418295709007.dkr.ecr.eu-west-2.amazonaws.com/project_image_yd:ECS_image",
 
     "cpu": 1024,
     "memory": 3072,
