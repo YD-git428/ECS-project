@@ -1,49 +1,150 @@
-<div align="center">
-    <img src="./images/coderco.jpg" alt="CoderCo" width="300"/>
-</div>
+# Threat Model App Deployment via ECS
 
-# CoderCo Assignment 1 - Open Source App Hosted on ECS with Terraform 🚀
+# User Guide
 
-This project is based on Amazon's Threat Composer Tool, an open source tool designed to facilitate threat modeling and improve security assessments. You can explore the tool's dashboard here: [Threat Composer Tool](https://awslabs.github.io/threat-composer/workspaces/default/dashboard)
+## Running Locally
 
-## Task/Assignment 📝
+![Alt text](Untitled video - Made with Clipchamp (3))
 
-- Create your own repository and complete the task there. You may create a `app` in your repo and copy all the files in this directory into it. Or alternatively, you can use this directory as is. Your choice.
 
-- Your task will be to create a container image for the app, push it to ECR (recommended) or DockerHub. Ideally, you should use a CI/CD pipeline to build, test, and push the container image.
-
-- Deploy the app on ECS using Terraform. All the resources should be provisioned using Terraform. Use TF modules.
-
-- Make sure the app is live on `https://tm.<your-domain>` or `https://tm.labs.<your-domain>`
-
-- App must use HTTPS. Hosted on ECS. Figure out the rest. Once app is live, add screenshots to the README.md file.
-
-- Add architecture diagram of how the infrastructure is setup. (Use Lucidchart or draw.io or mermaid) You are free to use any diagramming tool.
-
-## Local app setup 💻
+### Clone the Repository
 
 ```bash
-yarn install
-yarn build
-yarn global add serve
-serve -s build
-
-#yarn start
-http://localhost:3000/workspaces/default/dashboard
-
-## or
-yarn global add serve
-serve -s build
+  git clone https://github.com/YD-git428/ECS-project.git
 ```
 
-## Useful links 🔗
+### Navigate to the Project Directory
 
-- [Terraform AWS Registry](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
-- [Terraform AWS ECS](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_cluster)
-- [Terraform Docs](https://www.terraform.io/docs/index.html)
-- [ECS Docs](https://docs.aws.amazon.com/ecs/latest/userguide/what-is-ecs.html)
+```bash
+  cd ECS-project
+```
 
-## Advice & Tips �
+### Install Dependencies
 
-- This is just a simple app, you may use another app if you'd like. 
-- Use best practices for your Terraform code. Use best practices for your container image. Use best practices for your CI/CD pipeline.
+```bash
+  yarn install
+```
+
+### Build the Application Resources
+
+```bash
+  yarn build
+```
+
+### Serve the Application Locally
+
+Ensure you have `serve` installed globally:
+
+```bash
+  yarn global add serve
+```
+
+Then run:
+
+```bash
+  serve -s build
+```
+
+### Start the Development Server
+
+```bash
+  yarn start
+```
+
+### Access the Application
+
+Once the server is running, open your browser and navigate to:
+
+```
+http://localhost:3000
+```
+
+---
+
+## Terraform Deployment Guide
+
+### Initialise and Deploy Terraform Configuration
+
+Run the following commands in order:
+
+```bash
+terraform init      # Initialise Terraform
+terraform validate  # Validate configuration syntax and correctness
+terraform plan      # Preview the execution plan before applying changes
+terraform apply     # Apply the configuration to deploy infrastructure
+```
+
+### Destroy Infrastructure (If Needed)
+
+```bash
+terraform destroy
+```
+
+---
+
+## CI/CD Guide (*Using GitHub Actions*)
+
+### Pipeline Structure and Triggers
+
+1. **`imagepush.yml`**
+   - Uses `on: push` to trigger the workflow upon pushing changes to the repository.
+   
+2. **`apply.yml`**
+   - Runs conditionally after `imagepush.yml` completes successfully.
+   - Ensures a streamlined and sequential deployment process.
+
+3. **`destroy.yml`**
+   - Uses `workflow_dispatch`, enabling manual execution via the 'Actions' tab in the GitHub repository.
+
+### Key GitHub Actions Configurations
+
+#### Checkout the Repository
+
+Ensure the repository is checked out before execution:
+
+```yaml
+- name: Checkout code
+  uses: actions/checkout@v3
+```
+
+#### Set Up Essential Tools
+
+For Terraform, include the official GitHub Action:
+
+```yaml
+- name: Setup Terraform
+  uses: hashicorp/setup-terraform@v2
+```
+
+Refer to the [HashiCorp setup-terraform](https://github.com/hashicorp/setup-terraform) action for more details.
+
+#### Secure AWS Credentials
+
+GitHub Actions does not have direct access to your AWS credentials. Use **GitHub Secrets** to securely store and reference credentials within workflows.
+
+#### Running Terraform Commands
+
+Since Terraform is the primary tool, ensure commands are executed within the correct working directory:
+
+```yaml
+- name: Initialise Terraform
+  run: terraform init
+  working-directory: ./terraform
+```
+
+If necessary, verify the directory using:
+
+```bash
+ls -a   # List all files and directories
+pwd     # Print working directory
+```
+
+---
+
+## Potential Improvements
+
+- **Integrate `tfsec` Security Scanning**: Implement `tfsec` within the CI/CD pipeline to enhance Terraform security checks.
+- **Utilise AWS Endpoints**: Explore AWS VPC Endpoints to securely interact with the S3 bucket from the ECS cluster, reducing exposure to the public internet.
+
+This guide ensures a structured and efficient approach to managing and deploying the project. For any issues or optimisations, refer to the official documentation and best practices.
+
