@@ -4,7 +4,9 @@
 
 ## Running Locally
 
-![Alt text](Untitled video - Made with Clipchamp (3))
+<img src="https://github.com/user-attachments/assets/4785b346-8fe7-47f0-99a7-67d33fac4f94" alt="Untitled video - Made with Clipchamp" width="750"/>
+
+
 
 
 ### Clone the Repository
