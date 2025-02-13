@@ -18,6 +18,16 @@ module "ecs_module" {
   taskexec_name                   = "task_execution_role"
   task_definition_family          = "task_family_v1"
   execution_policy_name           = "execution_policy_project"
+  container_name                  = "project_image_yd"
+  ECR_image_arn                   = ""#Insert ECR ARN
+  log_group_arn                   = ""# Insert ARN for CloudWatch metric namespace 
+  ECR_ID                          = ""# Insert ECR ID - in this format <accountid>.dkr.... 
+  log_group                       = "/aws/fargate/my-log-group1"
+  region                          = "eu-west-2"
+  health_check_grace_period       = 60
+  instance_desired_count          = 1
+  capacity_provider_base_number   = 1
+  capacity_provider_weight_number = 100
 
 
 }
@@ -27,9 +37,11 @@ module "alb_module" {
   ssl_policy         = "ELBSecurityPolicy-TLS13-1-2-2021-06"
   lb_tag             = "alb_project"
   lb_name            = "alb-name"
+  load_balancer_type = "application"
   http_listener_tag  = "http_tag"
   targetname         = "targetname"
   targetgrp_tag      = "tg_project"
+  target_type        = "ip"
   https_listener_tag = "https_tag"
   subnet_ids         = [module.vpc.subnet1_id, module.vpc.subnet2_id]
   acm_cert_arn       = "" #Insert ca certificate ARN
@@ -54,7 +66,7 @@ module "vpc" {
 module "route_53" {
   source          = "./modules/route53"
   domain_name     = "youcefderder.co.uk" #Insert Domain
-  lb_dns          = module.alb_module.lb_dns_name
+  lb_dns_name     = module.alb_module.lb_dns_name
   cluster_id      = module.ecs_module.cluster_id
   ecs_service_id  = module.ecs_module.service_id
   email           = "" #Insert Email
@@ -62,4 +74,6 @@ module "route_53" {
   sns_topic_name  = "sns_project"
   alarm_name      = "my_alarm_project"
   cloudwatch_tag  = "cloudwatch_project"
+  ttl             = 200
+  log_group_name  = "/aws/fargate/my-log-group1"
 }

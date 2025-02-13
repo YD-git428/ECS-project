@@ -40,8 +40,17 @@ variable "https_listener_tag" {
 }
 
 variable "vpc_id" {
-
+type = string
 }
+
+variable "load_balancer_type" {
+  type = string
+}
+
+variable "target_type" {
+  type = string
+}
+
 
 
 

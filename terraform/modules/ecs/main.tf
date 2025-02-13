@@ -18,8 +18,8 @@ resource "aws_ecs_cluster_capacity_providers" "ecs-fargate-project" {
   capacity_providers = ["FARGATE"]
 
   default_capacity_provider_strategy {
-    base              = 1
-    weight            = 100
+    base              = var.capacity_provider_base_number
+    weight            = var.capacity_provider_weight_number
     capacity_provider = "FARGATE"
   }
 }
@@ -30,14 +30,14 @@ resource "aws_ecs_service" "ecsservice_project" {
   name                              = var.ecs_service_name
   cluster                           = aws_ecs_cluster.ecs_cluster_project.arn
   task_definition                   = aws_ecs_task_definition.aws_task_definition.arn
-  desired_count                     = 1
+  desired_count                     = var.instance_desired_count
   launch_type                       = "FARGATE"
-  health_check_grace_period_seconds = 60
+  health_check_grace_period_seconds = var.health_check_grace_period
   depends_on                        = [var.ecs_service_dependants]
 
   load_balancer {
     target_group_arn = var.target_grp_arn
-    container_name   = "project_image_yd"
+    container_name   = var.container_name
     container_port   = 3000
   }
 
@@ -99,10 +99,8 @@ resource "aws_iam_policy_attachment" "ecs-attach" {
 
 resource "aws_iam_policy" "execution_policy" {
   name        = var.execution_policy_name
-  description = "My first policy"
+  description = "Authentication to extract image layers and metadata from image stored in ECR"
 
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -121,7 +119,7 @@ resource "aws_iam_policy" "execution_policy" {
           "ecr:BatchCheckLayerAvailability"
         ]
 
-        Resource = "arn:aws:ecr:eu-west-2:418295709007:repository/project_image_yd"
+        Resource = var.ECR_image_arn
       },
       {
         Effect = "Allow"
@@ -131,7 +129,7 @@ resource "aws_iam_policy" "execution_policy" {
           "logs:PutLogEvents"
         ],
         Resource = [
-          "arn:aws:logs:eu-west-2:418295709007:log-group:/aws/fargate/my-log-group1:*"
+          var.log_group_arn
         ]
       }
     ]
@@ -171,8 +169,8 @@ resource "aws_ecs_task_definition" "aws_task_definition" {
   container_definitions = <<TASK_DEFINITION
 [
   {
-    "name": "project_image_yd",
-    "image": "418295709007.dkr.ecr.eu-west-2.amazonaws.com/project_image_yd:ECS_image",
+    "name": "${var.container_name}",
+    "image": "${var.ECR_ID}",
 
     "cpu": 1024,
     "memory": 3072,
@@ -187,8 +185,8 @@ resource "aws_ecs_task_definition" "aws_task_definition" {
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-group": "/aws/fargate/my-log-group1",
-        "awslogs-region": "eu-west-2",
+        "awslogs-group": "${var.log_group}",
+        "awslogs-region": "${var.region}",
         "awslogs-stream-prefix": "ecs"
       }
     }

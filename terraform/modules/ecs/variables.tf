@@ -57,3 +57,43 @@ variable "task_definition_family" {
 variable "execution_policy_name" {
   type = string
 }
+
+variable "capacity_provider_base_number" {
+  type = number
+}
+
+variable "capacity_provider_weight_number" {
+  type = number
+}
+
+variable "instance_desired_count" {
+  type = number
+}
+
+variable "health_check_grace_period" {
+  type = number
+}
+
+variable "container_name" {
+  type = string
+}
+
+variable "ECR_image_arn" {
+  type = string
+}
+
+variable "log_group_arn" {
+  type = string
+}
+
+variable "ECR_ID" {
+  type = string
+}
+
+variable "log_group" {
+  type = string
+}
+
+variable "region" {
+  type = string
+}

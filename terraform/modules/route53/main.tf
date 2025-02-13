@@ -7,16 +7,16 @@ resource "aws_route53_record" "www_project" {
   zone_id = data.aws_route53_zone.selected.id
   name    = "tm"
   type    = "CNAME"
-  ttl     = 200
+  ttl     = var.ttl
 
-  records = [var.lb_dns]
+  records = [var.lb_dns_name]
 }
 
 
 
 
 resource "aws_cloudwatch_metric_alarm" "ecs_metric_alarm" {
-  alarm_name          = "alarm_project"
+  alarm_name          = var.alarm_name
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 2
   metric_name         = aws_cloudwatch_log_metric_filter.error_metric_filter.metric_transformation[0].name
@@ -43,7 +43,7 @@ resource "aws_sns_topic" "sns_project" {
   name = var.sns_topic_name
 }
 
-resource "aws_sns_topic_subscription" "user_updates_sqs_target" {
+resource "aws_sns_topic_subscription" "user_updates_sns_target" {
   topic_arn = aws_sns_topic.sns_project.arn
   protocol  = "email"
   endpoint  = var.email
@@ -53,7 +53,7 @@ resource "aws_sns_topic_subscription" "user_updates_sqs_target" {
 
 
 resource "aws_route53_health_check" "health_check" {
-  fqdn                            = var.lb_dns
+  fqdn                            = var.lb_dns_name
   port                            = 3000
   type                            = "HTTP"
   resource_path                   = "/"
@@ -67,13 +67,13 @@ resource "aws_route53_health_check" "health_check" {
   }
 }
 resource "aws_cloudwatch_log_group" "my_first_log_grp" {
-  name              = "/aws/fargate/my-log-group1"
+  name              = var.log_group_name
   retention_in_days = 1
 }
 
 resource "aws_cloudwatch_log_metric_filter" "error_metric_filter" {
   name           = "ErrorCountFilter"
-  log_group_name = aws_cloudwatch_log_group.my_first_log_grp.name
+  log_group_name = var.log_group_name
   pattern        = "ERROR"
 
   metric_transformation {

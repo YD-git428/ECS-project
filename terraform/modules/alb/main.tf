@@ -1,7 +1,7 @@
 resource "aws_lb" "ecs-app-lb" {
   name               = var.lb_name
   internal           = false
-  load_balancer_type = "application"
+  load_balancer_type = var.load_balancer_type
   security_groups    = [var.sec_grp_arn]
   subnets            = var.subnet_ids
   drop_invalid_header_fields = true
@@ -15,7 +15,7 @@ resource "aws_lb" "ecs-app-lb" {
 
 resource "aws_lb_target_group" "targetgrp-project" {
   name        = var.targetname
-  target_type = "ip"
+  target_type = var.target_type
   port        = 3000
   vpc_id      = var.vpc_id
   protocol    = "HTTP"
