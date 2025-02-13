@@ -1,3 +1,4 @@
 *lock.hcl
 *.exe
 *.txt
+terraform/main.tf 
