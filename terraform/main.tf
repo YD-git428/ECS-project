@@ -32,7 +32,7 @@ module "alb_module" {
   targetgrp_tag      = "tg_project"
   https_listener_tag = "https_tag"
   subnet_ids         = [module.vpc.subnet1_id, module.vpc.subnet2_id]
-  acm_cert_arn       = "arn:aws:acm:eu-west-2:418295709007:certificate/56983b89-95e7-4726-a876-0fbddd0148d0"
+  acm_cert_arn       = "" #Insert ca certificate ARN
   sec_grp_arn        = module.vpc.security_grp_id
   vpc_id             = module.vpc.vpcid
 
@@ -44,8 +44,8 @@ module "vpc" {
   vpc_tag            = "vpc_project"
   igw_tag            = "igw_project"
   route_table_tag    = "route_table_tag"
-  availability_zone1 = "eu-west-2a"
-  availability_zone2 = "eu-west-2b"
+  availability_zone1 = "" #Insert Availability Zone
+  availability_zone2 = "" #Insert Availability Zone
   subnet1_tag        = "sub_1"
   subnet2_tag        = "sub_2"
   security_group_tag = "sec_grp"
@@ -53,11 +53,11 @@ module "vpc" {
 
 module "route_53" {
   source          = "./modules/route53"
-  domain_name     = "youcefderder.co.uk"
+  domain_name     = "youcefderder.co.uk" #Insert Domain
   lb_dns          = module.alb_module.lb_dns_name
   cluster_id      = module.ecs_module.cluster_id
   ecs_service_id  = module.ecs_module.service_id
-  email           = "youder067@gmail.com"
+  email           = "" #Insert Email
   healthcheck_tag = "healthcheck_project"
   sns_topic_name  = "sns_project"
   alarm_name      = "my_alarm_project"
