@@ -1,4 +1,4 @@
 *lock.hcl
 *.exe
 *.txt
-terraform/mainsecrets.tf 
+mainsecrets.tf 
